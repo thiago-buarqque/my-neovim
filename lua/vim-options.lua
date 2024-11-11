@@ -2,8 +2,11 @@ vim.cmd("set expandtab")
 vim.cmd("set tabstop=4")
 vim.cmd("set softtabstop=4")
 vim.cmd("set shiftwidth=4")
+vim.cmd("set clipboard=unnamedplus")
 vim.g.mapleader = " "
+vim.opt.number = true
 vim.wo.relativenumber = true
+vim.opt.scrolloff = 999
 
 -- Map Ctrl+Tab to behave like Ctrl+w for window commands
 vim.api.nvim_set_keymap('n', '<A-[>', '<C-w>', { noremap = true, silent = true })
