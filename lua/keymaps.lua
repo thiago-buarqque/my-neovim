@@ -23,6 +23,8 @@ vim.keymap.set("n", "<M-?>", ":rightbelow vnew<CR>", { noremap = true, silent = 
 vim.keymap.set("n", "<S-Tab>", "<<", { noremap = true, silent = true })
 vim.keymap.set("v", "<S-Tab>", "<gv", { noremap = true, silent = true })
 
+-- use ctrl + <leader> as <esc>
+vim.keymap.set("i", "<C-Space>", "<Esc>", { noremap = true, silent = true })
 -- Keymaps I got from NVChad
 
 map("i", "<C-b>", "<ESC>^i", { desc = "move beginning of line" })
