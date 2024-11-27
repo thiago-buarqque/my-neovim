@@ -1,3 +1,62 @@
+local function calculate_padding()
+	local total_height = vim.api.nvim_get_option("lines")
+	local layout_height = 20 -- Approximate height of your Alpha layout
+	return math.max(0, math.floor((total_height - layout_height) / 2))
+end
+
+local function button(sc, txt, keybind)
+	local sc_ = sc:gsub("%s", ""):gsub("SPC", "<leader>")
+
+	local opts = {
+		position = "center",
+		text = txt,
+		shortcut = sc,
+		cursor = 6,
+		width = 19,
+		align_shortcut = "right",
+		hl_shortcut = "Number",
+		hl = "Function",
+	}
+	if keybind then
+		opts.keymap = { "n", sc_, keybind, { noremap = true, silent = true } }
+	end
+
+	return {
+		type = "button",
+		val = txt,
+		on_press = function()
+			local key = vim.api.nvim_replace_termcodes(sc_, true, false, true)
+			vim.api.nvim_feedkeys(key, "normal", false)
+		end,
+		opts = opts,
+	}
+end
+
+local function getGreeting(name)
+	local tableTime = os.date("*t")
+	local hour = tableTime.hour
+	local greetingsTable = {
+		[1] = "  Sleep well",
+		[2] = "  Good morning",
+		[3] = "  Good afternoon",
+		[4] = "  Good evening",
+		[5] = "☾ .⭒˚ Good night",
+	}
+	local greetingIndex = 0
+	if hour == 23 or hour < 7 then
+		greetingIndex = 1
+	elseif hour < 12 then
+		greetingIndex = 2
+	elseif hour >= 12 and hour < 18 then
+		greetingIndex = 3
+	elseif hour >= 18 and hour < 21 then
+		greetingIndex = 4
+	elseif hour >= 21 then
+		greetingIndex = 5
+	end
+	return greetingsTable[greetingIndex] .. ", " .. name
+end
+
 local function getLen(str, start_pos)
 	local byte = string.byte(str, start_pos)
 	if not byte then
@@ -35,107 +94,148 @@ local function colorize(header, header_color_map, colors)
 	return colorized
 end
 
+local color_map = {
+	[[      AAAA]],
+	[[AAAAAA  AAAA]],
+	[[AA    AAAA  AAAA        KKHHKKHHHH]],
+	[[AAAA    AAAA  AA    HHBBKKKKKKKKKKKKKK]],
+	[[  AAAAAA      AAKKBBHHKKBBYYBBKKKKHHKKKKKK]],
+	[[      AAAA  BBAAKKHHBBBBKKKKBBYYBBHHHHKKKKKK]],
+	[[        BBAABBKKYYYYHHKKYYYYKKKKBBBBBBZZZZZZ]],
+	[[    YYBBYYBBKKYYYYYYYYYYKKKKBBKKAAAAZZOOZZZZ]],
+	[[    XXXXYYYYBBYYYYYYYYBBBBBBKKKKBBBBAAAAZZZZ]],
+	[[    XXXXUUUUYYYYBBYYYYYYBBKKBBZZOOAAZZOOAAAAAA]],
+	[[  ZZZZZZXXUUXXXXYYYYYYYYBBAAAAZZOOOOAAOOZZZZAAAA]],
+	[[  ZZUUZZXXUUUUXXXXUUXXFFFFFFFFAAAAOOZZAAZZZZ  AA]],
+	[[    RRRRUUUUZZZZZZZZXXOOFFFFOOZZOOAAAAAAZZZZAA]],
+	[[    CCSSUUUUZZXXXXZZXXOOFFFFOOZZOOOOZZOOAAAA]],
+	[[    CCCCUUUUUUUUUURRRROOFFFFOOZZOOOOZZOOZZZZ]],
+	[[    CCCCUUUUUUUUSSCCCCEEQQQQOOZZOOOOZZOOZZZZ]],
+	[[    CCCCUUGGUUUUCCCCCCEEQQQQOOZZOOOOZZEEZZ]],
+	[[    RRRRGGGGUUGGCCCCCCOOOOOOOOZZOOEEZZII]],
+	[[      IIRRGGGGGGCCCCCCOOOOOOOOZZEEII]],
+	[[            GGRRCCCCCCOOOOEEEEII  II]],
+	[[                RRRRRREEEE  IIII]],
+	[[                      II]],
+	[[]],
+}
+
 local alpha_c = function()
-	local color = require("util.color")
-	local alpha = require("alpha")
+    local color = require("utils.color_utils")
+    local mocha = require("catppuccin.palettes").get_palette("mocha")
 
-	local mocha = require("catppuccin.palettes").get_palette("mocha")
+    -- Header
 
-	local dashboard = require("alpha.themes.dashboard")
+    local yellow = "#FAC87C"
+    local orange = "#BF854E"
+    local maroon = "#502E2B"
+    local brown = "#38291B"
+    local colors = {
+        ["A"] = { fg = mocha.rosewater },
+        ["Y"] = { fg = yellow },
+        ["B"] = { fg = color.darken(yellow, 5) },
+        ["X"] = { fg = color.darken(yellow, 20) },
+        ["U"] = { fg = color.darken(yellow, 25) },
+        ["F"] = { fg = color.darken(yellow, 35) },
+        ["O"] = { fg = color.darken(yellow, 45) },
+        ["K"] = { fg = maroon },
+        ["H"] = { fg = color.darken(maroon, 10) },
+        ["Z"] = { fg = mocha.crust },
+        ["G"] = { fg = color.darken(yellow, 25) },
+        ["R"] = { fg = orange },
+        ["Q"] = { fg = color.darken(orange, 20) },
+        ["E"] = { fg = color.darken(orange, 35) },
+        ["I"] = { fg = brown },
+        ["C"] = { fg = mocha.mantle },
+        ["S"] = { fg = mocha.subtext1 },
+    }
 
-	local color_map = {
-		[[      AAAA]],
-		[[AAAAAA  AAAA]],
-		[[AA    AAAA  AAAA        KKHHKKHHHH]],
-		[[AAAA    AAAA  AA    HHBBKKKKKKKKKKKKKK]],
-		[[  AAAAAA      AAKKBBHHKKBBYYBBKKKKHHKKKKKK]],
-		[[      AAAA  BBAAKKHHBBBBKKKKBBYYBBHHHHKKKKKK]],
-		[[        BBAABBKKYYYYHHKKYYYYKKKKBBBBBBZZZZZZ]],
-		[[    YYBBYYBBKKYYYYYYYYYYKKKKBBKKAAAAZZOOZZZZ]],
-		[[    XXXXYYYYBBYYYYYYYYBBBBBBKKKKBBBBAAAAZZZZ]],
-		[[    XXXXUUUUYYYYBBYYYYYYBBKKBBZZOOAAZZOOAAAAAA]],
-		[[  ZZZZZZXXUUXXXXYYYYYYYYBBAAAAZZOOOOAAOOZZZZAAAA]],
-		[[  ZZUUZZXXUUUUXXXXUUXXFFFFFFFFAAAAOOZZAAZZZZ  AA]],
-		[[    RRRRUUUUZZZZZZZZXXOOFFFFOOZZOOAAAAAAZZZZAA]],
-		[[    CCSSUUUUZZXXXXZZXXOOFFFFOOZZOOOOZZOOAAAA]],
-		[[    CCCCUUUUUUUUUURRRROOFFFFOOZZOOOOZZOOZZZZ]],
-		[[    CCCCUUUUUUUUSSCCCCEEQQQQOOZZOOOOZZOOZZZZ]],
-		[[    CCCCUUGGUUUUCCCCCCEEQQQQOOZZOOOOZZEEZZ]],
-		[[    RRRRGGGGUUGGCCCCCCOOOOOOOOZZOOEEZZII]],
-		[[      IIRRGGGGGGCCCCCCOOOOOOOOZZEEII]],
-		[[            GGRRCCCCCCOOOOEEEEII  II]],
-		[[                RRRRRREEEE  IIII]],
-		[[                      II]],
-		[[]],
-	}
+    local header_val = {}
+    for _, line in ipairs(color_map) do
+        local header_line = [[]]
+        for i = 1, #line do
+            if line:sub(i, i) ~= " " then
+                header_line = header_line .. "█"
+            else
+                header_line = header_line .. " "
+            end
+        end
+        table.insert(header_val, header_line)
+    end
 
-	local yellow = "#FAC87C"
-	local orange = "#BF854E"
-	local maroon = "#502E2B"
-	local brown = "#38291B"
-	local colors = {
-		["A"] = { fg = mocha.rosewater},
-		["Y"] = { fg = yellow },
-		["B"] = { fg = color.darken(yellow,5) },
-		["X"] = { fg = color.darken(yellow,20) },
-		["U"] = { fg = color.darken(yellow, 25)},
-		["F"] = { fg = color.darken(yellow, 35) },
-		["O"] = { fg = color.darken(yellow, 45) },
-		["K"] = { fg = maroon},
-		["H"] = { fg = color.darken(maroon, 10)},
-		["Z"] = { fg = mocha.crust },
-		["G"] = { fg = color.darken(yellow, 25) },
-		["R"] = { fg = orange },
-		["Q"] = { fg = color.darken(orange, 20) },
-		["E"] = { fg = color.darken(orange, 35)},
-		["I"] = { fg = brown },
-		["C"] = { fg = mocha.mantle },
-		["S"] = { fg = mocha.subtext1},
-	}
+    local colorized = colorize(header_val, color_map, colors)
 
-	local header = {}
-	for _, line in ipairs(color_map) do
-		local header_line = [[]]
-		for i = 1, #line do
-			if line:sub(i, i) ~= " " then
-				header_line = header_line .. "█"
-			else
-				header_line = header_line .. " "
-			end
-		end
-		table.insert(header, header_line)
-	end
+    local header = {
+        type = "text",
+        val = header_val,
+        opts = {
+            hl = colorized,
+            position = "center",
+        },
+    }
 
-	local header_add = [[          N        E      O    B   E E         ]]
-	table.insert(header, header_add)
+    -- Greetings
+    local userName = "Evry"
+    local greeting = getGreeting(userName)
 
-	local hl_add = {}
-	for i = 1, #header_add do
-		table.insert(hl_add, {"NeoBeeTitle", 1, i})
-	end
+    local greetHeading = {
+        type = "text",
+        val = greeting,
+        opts = {
+            position = "center",
+            hl = "String",
+        },
+    }
 
-	dashboard.section.header.val = header
-	local colorized = colorize(header, color_map, colors)
+    local fortune = {
+        type = "text",
+        val = "First, solve the problem. Then, write the code.",
+        opts = {
+            position = "center",
+            hl = "Comment",
+        },
+    }
 
-	table.insert(colorized, hl_add)
+    local buttons = {
+        type = "group",
+        val = {
+            button("s", " Restore", ":SessionManager load_last_session<CR>"),
+            button("r", "🗐 Recents", ":Telescope oldfiles<CR>"),
+            button("f", " Search", ":Telescope find_files<CR>"),
+            button("M-p", " Files", ":Neotree filesystem reveal left<CR>"),
+            button("u", " Update", ":Lazy sync<CR>"),
+            button("c", " Config", ":e ~/.config/nvim/<CR>"),
+        },
+        opts = {
+            position = "center",
+            spacing = 1,
+            width = 80, -- Adjust width to center the entire row of buttons
+            align = "center", -- Center align all buttons in the row
+        },
+    }
+    local section = {
+        header = header,
+        buttons = buttons,
+        greetHeading = greetHeading,
+        footer = fortune,
+    }
 
-	dashboard.section.header.opts = {
-		hl = colorized,
-		position = "center",
-	}
-
-	dashboard.section.buttons.val = {
-		dashboard.button("SPC e e", "  New file", "<Cmd>ene <CR>"),
-		dashboard.button("SPC f f", "  Find file"),
-		dashboard.button("SPC s s", "  NeoBee config", "<Cmd>Neotree reveal ~/.config/nvim<CR>"),
-		dashboard.button("SPC q q", "  Quit", "<Cmd>qa<CR>"),
-	}
-	for _, a in ipairs(dashboard.section.buttons.val) do
-		a.opts.width = 49
-		a.opts.cursor = -2
-	end
-
-	alpha.setup(dashboard.config)
+    return {
+        layout = {
+            { type = "padding", val = calculate_padding() },
+            section.header,
+            { type = "padding", val = 1 },
+            section.greetHeading,
+            { type = "padding", val = 1 },
+            section.buttons,
+            { type = "padding", val = 1 },
+            section.footer,
+        },
+        opts = {
+            margin = 8,
+            align = "center",
+        },
+    }
 end
 
 return alpha_c

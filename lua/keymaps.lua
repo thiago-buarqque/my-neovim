@@ -11,20 +11,23 @@ local map = vim.keymap.set
 -- Create a replace shortcut
 map("n", "<leader>h", ":lua inputreplace()<CR>", { noremap = true, silent = true })
 
+map('n', '<leader>o', ':put _<CR>', { noremap = true, silent = true })
+map('n', '<leader>O', ':put! _<CR>', { noremap = true, silent = true })
 -- Map Tab to indent the current line or selected lines in visual mode
-vim.keymap.set("n", "<Tab>", ">>", { noremap = true, silent = true })
-vim.keymap.set("v", "<Tab>", ">gv", { noremap = true, silent = true })
+map("n", "<Tab>", ">>", { noremap = true, silent = true })
+map("v", "<Tab>", ">gv", { noremap = true, silent = true })
 
 -- Open buffer on the right side
--- vim.keymap.set("n", "<M-?>", ":vnew<CR>", { noremap = true, silent = true })
-vim.keymap.set("n", "<M-?>", ":rightbelow vnew<CR>", { noremap = true, silent = true })
+-- map("n", "<M-?>", ":vnew<CR>", { noremap = true, silent = true })
+map("n", "<M-?>", ":rightbelow vnew<CR>", { noremap = true, silent = true })
 
 -- Map Shift+Tab to un-indent the current line or selected lines in visual mode
-vim.keymap.set("n", "<S-Tab>", "<<", { noremap = true, silent = true })
-vim.keymap.set("v", "<S-Tab>", "<gv", { noremap = true, silent = true })
+map("n", "<S-Tab>", "<<", { noremap = true, silent = true })
+map("v", "<S-Tab>", "<gv", { noremap = true, silent = true })
 
 -- use ctrl + <leader> as <esc>
-vim.keymap.set("i", "<C-Space>", "<Esc>", { noremap = true, silent = true })
+map("i", "<C-Space>", "<Esc>", { noremap = true, silent = true })
+
 -- Keymaps I got from NVChad
 
 map("i", "<C-b>", "<ESC>^i", { desc = "move beginning of line" })
@@ -55,9 +58,6 @@ end, { desc = "general format file" })
 -- global lsp mappings
 map("n", "<leader>ds", vim.diagnostic.setloclist, { desc = "LSP diagnostic loclist" })
 
--- tabufline
--- map("n", "<leader>b", "<cmd>enew<CR>", { desc = "buffer new" })
-
 -- Comment
 map("n", "<leader>/", "gcc", { desc = "toggle comment", remap = true })
 map("v", "<leader>/", "gc", { desc = "toggle comment", remap = true })
@@ -73,9 +73,3 @@ map(
 -- terminal
 map("t", "<C-x>", "<C-\\><C-N>", { desc = "terminal escape terminal mode" })
 
--- whichkey
-map("n", "<leader>wK", "<cmd>WhichKey <CR>", { desc = "whichkey all keymaps" })
-
-map("n", "<leader>wk", function()
-    vim.cmd("WhichKey " .. vim.fn.input("WhichKey: "))
-end, { desc = "whichkey query lookup" })
