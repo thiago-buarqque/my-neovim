@@ -73,3 +73,11 @@ map(
 -- terminal
 map("t", "<C-x>", "<C-\\><C-N>", { desc = "terminal escape terminal mode" })
 
+-- Keybindings for tabs
+vim.keymap.set('n', '<leader>tn', ':tabnew<CR>', { desc = "Open a new tab" }) -- New tab
+vim.keymap.set('n', '<leader>tc', ':tabclose<CR>', { desc = "Close the current tab" }) -- Close tab
+vim.keymap.set('n', '<leader>to', ':tabonly<CR>', { desc = "Close all other tabs" }) -- Close other tabs
+vim.keymap.set('n', '<leader>tn', ':tabn<CR>', { desc = "Next tab" }) -- Next tab
+vim.keymap.set('n', '<leader>tp', ':tabp<CR>', { desc = "Previous tab" }) -- Previous tab
+vim.keymap.set('n', '<leader>tl', ':tabs<CR>', { desc = "List all tabs" }) -- List tabs
+

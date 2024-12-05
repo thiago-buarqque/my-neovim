@@ -7,6 +7,7 @@ vim.g.mapleader = " "
 vim.opt.number = true
 vim.wo.relativenumber = true
 vim.opt.scrolloff = 999
+vim.opt.showtabline = 2
 
 -- Customize LSP references color
 vim.cmd [[

@@ -4,7 +4,9 @@ return {
     config = function()
         require('lualine').setup({
             options = {
-                theme = 'dracula'
+                theme = 'dracula',
+                section_separators = "|",
+                component_separators = "",
             }
         })
     end
