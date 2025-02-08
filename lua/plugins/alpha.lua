@@ -7,7 +7,8 @@ return {
             return
         end
 
-        local screen = require("alpha-screens.neo-bee")
+        -- local screen = require("alpha-screens.neo-bee")
+        local screen = require("alpha-screens.mountain")
 
         alpha.setup(screen())
     end,
