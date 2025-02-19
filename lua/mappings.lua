@@ -29,15 +29,15 @@ map("n", "<C-n>", "<cmd>enew<CR>", { desc = "buffer new" })
 map("n", "<Tab>", ">>", { noremap = true, silent = true, desc = "Add tab" })
 map("n", "<S-Tab>", "<<", { noremap = true, silent = true, desc = "Remove tab" })
 
-map("n", "<C-l>", function()
+map("n", "<M-l>", function()
   require("nvchad.tabufline").next()
 end, { desc = "buffer goto next" })
 
-map("n", "<C-h>", function()
+map("n", "<M-h>", function()
   require("nvchad.tabufline").prev()
 end, { desc = "buffer goto prev" })
 
-map("n", "<C-w>", function()
+map("n", "<M-w>", function()
   require("nvchad.tabufline").close_buffer()
 end, { desc = "buffer close" })
 
