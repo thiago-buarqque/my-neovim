@@ -16,7 +16,7 @@ return {
     "nvim-telescope/telescope.nvim",
     opts = function(_, conf)
       conf.defaults = vim.tbl_deep_extend("force", conf.defaults or {}, {
-        file_ignore_patterns = { "**/node_modules", ".git", "**/build", "dist", "**/__pycache__", "**/target" },
+        file_ignore_patterns = { "**/node_modules", ".git", "**/build", "dist", "**/__pycache__", "**/target", "**/bin" },
       })
 
       local telescopeBuiltin = require('telescope.builtin')

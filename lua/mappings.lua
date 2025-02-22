@@ -26,8 +26,8 @@ map('n', '<leader>O', ':put! _<CR>', { noremap = true, silent = true, desc = "Ad
 map("n", "<C-n>", "<cmd>enew<CR>", { desc = "buffer new" })
 
 -- Map Tab to indent the current line or selected lines in visual mode
-map("n", "<Tab>", ">>", { noremap = true, silent = true, desc = "Add tab" })
-map("n", "<S-Tab>", "<<", { noremap = true, silent = true, desc = "Remove tab" })
+map({"n", "v"}, "<Tab>", ">>", { noremap = true, silent = true, desc = "Add tab" })
+map({"n", "v"}, "<S-Tab>", "<<", { noremap = true, silent = true, desc = "Remove tab" })
 
 map("n", "<M-l>", function()
   require("nvchad.tabufline").next()
